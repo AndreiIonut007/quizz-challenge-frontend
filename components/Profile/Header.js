@@ -13,13 +13,13 @@ const Header = ({props}) => {
         className="rounded-full my-auto"
         //   src={session?.user.image}
         alt="Profile img"
-        width="100"
-        height="100"
+        width="50"
+        height="50"
       />
       <nav className='flex flex-row space-x-5 font-thin text-white text-xs antialiased tracking-widest'>
-        <Link className='border-b-2 border-red-900' href={'/'}>PROFILE</Link>
-        <Link className='hover:transition-all hover:border-b-2 hover:border-red-900' href={'/quiz'}>QUIZ</Link>
-        <Link className='hover:transition-all hover:border-b-2 hover:border-red-900' href={'/ranting'}>RANKING</Link>
+        <Link className={`${props.profile?"border-b-2 border-red-900":"hover:transition-all hover:border-b-2 hover:border-red-900"}`} href={'/'}>PROFILE</Link>
+        <Link className={`${props.quiz?"border-b-2 border-red-900":"hover:transition-all hover:border-b-2 hover:border-red-900"} `} href={'/quiz'}>QUIZ</Link>
+        <Link className={`${props.ranking?"border-b-2 border-red-900":"hover:transition-all hover:border-b-2 hover:border-red-900"} `} href={'/ranting'}>RANKING</Link>
       </nav>
     </div>
   )

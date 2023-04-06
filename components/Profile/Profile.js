@@ -8,8 +8,8 @@ const Profile = () => {
         className="rounded-full my-auto"
         //   src={session?.user.image}
         alt="Profile img"
-        width="100"
-        height="100"
+        width="50"
+        height="50"
       />
       <div className="flex flex-col justify-evenly w-3/5">
         <p className="text-center text-2xl">
