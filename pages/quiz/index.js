@@ -3,9 +3,12 @@ import Header from "../../components/Profile/Header";
 import Head from "next/head";
 import QuizGenerator from "../../components/Quizz/QuizGenerator";
 import QuizSelector from "../../components/Quizz/QuizSelector";
+import { getSession } from "next-auth/react";
+import Login from "../../components/Login";
 
 export default function Quiz({ session }) {
-    const [createQuiz, setCreateQuiz] = useState(true);
+  if (!session) return <Login />;
+  const [createQuiz, setCreateQuiz] = useState(true);
   return (
     <div className="h-screen overflow-auto bg-gradient-to-tr from-[#088DE5] to-[#47D7CE] via-[#4897BD]">
       <Head>
@@ -18,7 +21,7 @@ export default function Quiz({ session }) {
         <div className="flex flex-row justify-center py-2 space-x-4 bg-transparent">
           <p
             className={`font-mono text-xl px-2 py-2 text-white border-b-2 ${
-                createQuiz ? "border-[#b2301c]" : "border-transparent"
+              createQuiz ? "border-[#b2301c]" : "border-transparent"
             } cursor-pointer shadow-lg rounded-md`}
             onClick={() => setCreateQuiz(true)}
           >
@@ -26,7 +29,7 @@ export default function Quiz({ session }) {
           </p>
           <p
             className={`font-mono text-xl px-2 py-2 text-white border-b-2 ${
-                !createQuiz ? "border-[#b2301c]" : "border-transparent"
+              !createQuiz ? "border-[#b2301c]" : "border-transparent"
             } cursor-pointer shadow-lg rounded-md`}
             onClick={() => setCreateQuiz(false)}
           >
@@ -39,4 +42,11 @@ export default function Quiz({ session }) {
       <footer></footer>
     </div>
   );
+}
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+  return {
+    props: { session },
+  };
 }

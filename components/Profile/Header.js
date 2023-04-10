@@ -5,13 +5,11 @@ import Link from "next/link";
 import { FaSignOutAlt } from "react-icons/fa";
 
 const Header = ({ props }) => {
-  // const { data: session } = useSession();
 
   return (
     <div className="bg-transparent flex items-center justify-evenly p-2 shadow-md top-0 sticky z-50 h-16 rounded-md">
       <Image
         className="rounded-full my-auto"
-        //   src={session?.user.image}
         alt="Profile img"
         width="50"
         height="50"

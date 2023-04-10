@@ -3,16 +3,19 @@ import Question from "./Question";
 import { VscAdd } from "react-icons/vsc";
 import { nanoid } from "nanoid";
 import { MdTimer } from "react-icons/md";
-// import { useSession } from "next-auth/react";
+import { FaRegCalendarTimes } from "react-icons/fa";
+import { useSession } from "next-auth/react";
+import axios from "axios";
 
 const QuizGenerator = () => {
   const ENDPOINT_QUIZ = "http://localhost:8181/api/v1/quiz";
   const nameRef = useRef();
+  const timestampRef = useRef();
   const rewardRef = useRef({ I: 0, II: 0, III: 0 });
   const childRef = useRef([]);
   const [rangeRef, setRangeRef] = useState(10);
   const [questions, setQuestions] = useState([]);
-  //   const { data: session } = useSession();
+  const { data: session } = useSession();
   const index = useRef(0);
 
   useEffect(() => {
@@ -22,15 +25,32 @@ const QuizGenerator = () => {
   });
 
   const handleSaveModel = () => {
-    if (nameRef.current.value === "") {
-      alert("Missing title");
+    if (nameRef.current.value === "" || timestampRef.current.value === "") {
+      alert("Missing title or timestamp");
+      return;
+    }
+    Date.prototype.addMinutes = function (h) {
+      this.setMinutes(this.getMinutes() + h);
+      return this;
+    };
+
+    if (
+      new Date(timestampRef.current.value).addMinutes(rangeRef) <= new Date()
+    ) {
+      alert("timestamp wrong");
       return;
     }
 
     const formData = {
-      email: session?.user.email,
+      creator: session?.user.email,
       title: nameRef.current.value,
       timer: rangeRef,
+      expDate: timestampRef.current.value,
+      rewards: {
+        winner: rewardRef.current.I,
+        secPlace: rewardRef.current.II,
+        thirdPlace: rewardRef.current.III,
+      },
       questions: [],
     };
     const questions = [];
@@ -41,20 +61,20 @@ const QuizGenerator = () => {
       }
     });
     if (formData.questions.length <= 0) {
-      alert("No");
+      alert("Add more questions");
       return;
     }
     console.log("data   :", formData);
 
-    // axios
-    //   .post(ENDPOINT_QUIZ, formData, {
-    //     headers: {
-    //       accept: "application/json",
-    //       "content-type": "application/json",
-    //     },
-    //   })
-    //   .then((response) => console.log(response))
-    //   .catch((e) => console.log(e));
+    axios
+      .post(ENDPOINT_QUIZ, formData, {
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+        },
+      })
+      .then((response) => console.log(response))
+      .catch((e) => console.log(e));
   };
 
   return (
@@ -76,7 +96,7 @@ const QuizGenerator = () => {
             onChange={(e) => setRangeRef(e.currentTarget.value)}
             type="range"
             defaultValue="10"
-            min="5"
+            min="1"
             max="60"
             step="1"
           />
@@ -89,7 +109,7 @@ const QuizGenerator = () => {
               ref={rewardRef}
               onChange={(e) => {
                 rewardRef.current.I = e.currentTarget.value;
-                console.log(rewardRef.current.I)
+                console.log(rewardRef.current.I);
               }}
               placeholder="I"
               type="number"
@@ -100,7 +120,7 @@ const QuizGenerator = () => {
               ref={rewardRef}
               onChange={(e) => {
                 rewardRef.current.II = e.currentTarget.value;
-                console.log(rewardRef.current.II)
+                console.log(rewardRef.current.II);
               }}
               placeholder="II"
               type="number"
@@ -111,11 +131,19 @@ const QuizGenerator = () => {
               ref={rewardRef}
               onChange={(e) => {
                 rewardRef.current.III = e.currentTarget.value;
-                console.log(rewardRef.current.III)
+                console.log(rewardRef.current.III);
               }}
               placeholder="III"
               type="number"
               min="0"
+            />
+          </div>
+          <div className="inline-flex mt-6 text-white">
+            <FaRegCalendarTimes className="mr-2" size={30} />
+            <input
+              className="bg-transparent outline-transparent"
+              ref={timestampRef}
+              type="datetime-local"
             />
           </div>
         </div>
@@ -131,12 +159,10 @@ const QuizGenerator = () => {
               <Question
                 key={nanoid()}
                 childFunc={childRef.current[index.current]}
-                index = {index.current}
+                index={index.current}
               />,
             ]);
             index.current = index.current + 1;
-            console.log(index.current);
-            console.log("childRef", childRef);
           }}
           size={60}
         />

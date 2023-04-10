@@ -17,7 +17,6 @@ export default function Home({session}) {
       <Header props={{ quiz: false, profile: true, ranking: false }} />
       <main className={"flex flex-col"}>
         <Profile />
-        <Portofolio />
       </main>
     </div>
   );
