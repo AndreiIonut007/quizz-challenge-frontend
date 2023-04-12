@@ -5,21 +5,23 @@ import Header from "../../components/Profile/Header";
 import { selectProfile } from "../../public/src/features/profileSlice";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
+import Timer from "../../components/Quizz/Timer";
+
 
 export default function Quiz({ data }) {
   const QUIZ_CHALLENGE_SERVICE_ENDPOINT_QUIZ =
     "http://localhost:8181/api/v1/quiz/verify";
-    const profile = useSelector(selectProfile);
-    const route = useRouter();
+  const profile = useSelector(selectProfile);
+  const route = useRouter();
   const [matrix, setMatrix] = useState(
     Array.from({ length: data.questions.length }, () =>
       Array.from({ length: 6 }, () => false)
     )
   );
 
-  useEffect(() => {
-    console.log("params:", data);
-  }, []);
+  const handler = () =>{
+    verifyAnswers();
+  }
 
   const handleChange = (row, column) => {
     const i = parseInt(row);
@@ -39,9 +41,8 @@ export default function Quiz({ data }) {
       })
       .then((resp) => {
         console.log(resp.data);
-        alert("Correct answers: "+resp.data)
+        alert("Correct answers: " + resp.data);
         route.back();
-
       })
       .catch((err) => console.log(err));
   };
@@ -54,10 +55,13 @@ export default function Quiz({ data }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header props={{ quiz: false, profile: false, ranking: false }} />
+      <div className="sticky top-5 left-2/4 "> 
+        <Timer props={{ initialMinutes: data?.timer, handler:handler }} />
+      </div>
       <main>
         <div className="w-2/5 mx-auto space-y-2">
           <p className="w-fit mx-auto mt-3 p-2 border-2 border-red-400 rounded-md bg-red-200">
-            {data.title}
+            {data?.title}
           </p>
           <br />
           {data?.questions.map((question, x) => (

@@ -7,7 +7,7 @@ import { selectProfile } from '../../public/src/features/profileSlice';
 const Portofolio = () => {
   const profile = useSelector(selectProfile);
   return (
-    <div className='inline-flex max-md:inline-block mx-8 mt-16'>
+    <div className='inline-flex max-md:inline-block mx-8 mt-10'>
         <Tokens tokens = {profile.tokens}/>
         <Badges badges = {profile.badges}/>
     </div>

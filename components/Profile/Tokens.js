@@ -9,8 +9,8 @@ const Tokens = ({tokens}) => {
         <p className="text-xl text-[#271155]">Tokens</p>
       </div>
       <div className="py-4 shadow-lg">
-        <div className="">
-          <p className="text-6xl text-white text-center">{tokens}</p>
+        <div className="h-[100px]">
+          <p className="text-6xl w-fit  m-auto text-center text-white">{tokens}</p>
         </div>
       </div>
     </div>

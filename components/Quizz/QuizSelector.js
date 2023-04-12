@@ -6,17 +6,35 @@ import axios from "axios";
 import QuizSelectElement from "./QuizSelectElement";
 
 const QuizSelector = () => {
-  const QUIZ_ENDPIONT = "http://localhost:8181/api/v1/quiz";
+  const QUIZ_SERVICE_ENDPIONT = "http://localhost:8181/api/v1/quiz";
+  const QUIZ_SERVICE_ENDPIONT_VALIDATION = "http://localhost:8181/api/v1/profile/validate/selection";
   const dispatch = useDispatch();
   const quizzes = useSelector(selectQuiz);
   const { data: session } = useSession();
   const [availableQuizzes, setAvailableQuizzes] = useState(true);
+  const [validation, setValidation] = useState(true);
 
   useEffect(() => {
+    const validateData = () => {
+      axios
+        .get(
+          QUIZ_SERVICE_ENDPIONT_VALIDATION,
+          { params: { email: session?.user.email } },
+          { headers: { accept: "application/json" } }
+        )
+        .then((response) => {
+          console.log(response.data);
+          setValidation(response.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
     const fetchData = () => {
       axios
         .get(
-          QUIZ_ENDPIONT,
+          QUIZ_SERVICE_ENDPIONT,
           { params: { email: session?.user.email } },
           { headers: { accept: "application/json" } }
         )
@@ -32,17 +50,20 @@ const QuizSelector = () => {
           console.log(err);
         });
     };
+    validateData();
     fetchData();
   }, []);
   return (
     <div>
-      {availableQuizzes &&
+      {validation &&
+        availableQuizzes &&
         quizzes.map((quiz) => <QuizSelectElement quiz={quiz} key={quiz.id} />)}
       {!availableQuizzes && (
         <p className="text-center text-white">
           There are no quizzes available at the moment.
         </p>
       )}
+      {!validation && <p>Come back tomorrow!</p>}
     </div>
   );
 };

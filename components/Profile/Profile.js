@@ -15,7 +15,7 @@ const Profile = () => {
       const response = axios
         .put (MOCK_INTERVIEW_PLAT_ENDPIONT, {email:session?.user.email}, {headers: {'Content-Type': 'application/json'}})
         .then((response) => {
-          console.log("contacts:", response.data);
+          console.log("contacts:", response.data.badges);
           dispatch(addProfile(response.data));
         })
         .catch((err) => {
@@ -23,7 +23,7 @@ const Profile = () => {
         });
     };
     fetchData();
-  }, [Profile]);
+  }, []);
   return (
     <>
       <ProfileComp />
